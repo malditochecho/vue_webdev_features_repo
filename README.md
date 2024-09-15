@@ -1,45 +1,55 @@
-# vueproject
+# Vue Features Repo
 
-This template should help get you started developing with Vue 3 in Vite.
+This repo compiles many popular web development features developed in different UI frameworks so I can copy paste into future projects.
 
-## Recommended IDE Setup
+## Branches
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+It has a `main` branch with the basics of a Vue project. If anything about vue must be upgraded, it must be done here.
 
-## Type Support for `.vue` Imports in TS
+It has a list of other branches for every UI framework like `ui/tailwind`, `ui/shadcn`, `ui/vuetify`, etc.. 
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+Based on the framework branches, it has a list of branches with features.
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-yarn
+```
+main
+ui/tailwind
+ui/shadcn
+ui/vuetify
+ui/...
+ui/...
+feature/lazy-loading
+feature/fetch
+feature/auto-focus
+feature/...
+feature/...
 ```
 
-### Compile and Hot-Reload for Development
+## How to use
 
-```sh
-yarn dev
+### add UI framework branch
+
+If a new framework needs to be added, create a new branch with the command:
+
+```bash
+git checkout main
+git checkout -b ui/bootstrap
 ```
 
-### Type-Check, Compile and Minify for Production
+### feature branches
 
-```sh
-yarn build
+```bash
+git checkout -b feature/lazy-loading-tailwind ui/tailwind
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+In this example, the new branch will be created based on the `ui/tailwind branch`.
 
-```sh
-yarn test:unit
-```
+### updates on the base branch
 
-### Lint with [ESLint](https://eslint.org/)
+If the base branch needs to be updated, for example by upgrading vue, the following command can be used:
 
-```sh
-yarn lint
+```bash
+git checkout main
+# Apply changes, commit them
+git checkout ui/tailwind
+git merge main
 ```
