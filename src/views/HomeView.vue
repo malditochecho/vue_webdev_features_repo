@@ -51,8 +51,9 @@ const checkItemAlreadyAdded = (id: number): boolean => {
 /**
  * Shuffle the items array and get 10 random items
  */
-const shuffleItems = (): void => {
+const shuffleItems = async (): Promise<void> => {
   items.value = source.sort(() => 0.5 - Math.random()).slice(0, 20)
+  await waitForImagesToLoad(items.value.map((item) => item.url))
 }
 
 /**
@@ -60,6 +61,8 @@ const shuffleItems = (): void => {
  */
 const saveItems = (): void => {
   alert(`Saved ${selectedItems.value.length} items to the DB`)
+  selectedItems.value = []
+  shuffleItems()
 }
 
 /**
@@ -70,6 +73,24 @@ const toggleItem = (item: Item): void => {
   const index = selectedItems.value.findIndex((img) => img.id === item.id)
   if (index === -1) selectedItems.value.push(item)
   else selectedItems.value.splice(index, 1)
+}
+
+/**
+ * Wait until all images are loaded
+ * @param urls - Array of image URLs
+ * @returns Promise that resolves when all images are loaded
+ */
+const waitForImagesToLoad = (urls: string[]): Promise<void> => {
+  const promises = urls.map((url) => {
+    return new Promise<void>((resolve, reject) => {
+      const img = new Image()
+      img.src = url
+      img.onload = () => resolve()
+      img.onerror = () => reject(new Error(`Failed to load image: ${url}`))
+    })
+  })
+
+  return Promise.all(promises).then(() => {})
 }
 
 // LIFE CYCLE
@@ -94,7 +115,8 @@ onMounted(() => {
 
       <!-- items -->
       <p class="font-medium text-white">ℹ️ Add items by clicking on them</p>
-      <div class="grid grid-cols-2 gap-3">
+
+      <TransitionGroup name="list" tag="div" class="grid grid-cols-2 gap-3">
         <div v-for="item in items" :key="item.id">
           <button @click.stop="toggleItem(item)">
             <img
@@ -105,7 +127,7 @@ onMounted(() => {
             />
           </button>
         </div>
-      </div>
+      </TransitionGroup>
     </div>
 
     <!-- selected items -->
@@ -128,3 +150,20 @@ onMounted(() => {
     </div>
   </main>
 </template>
+
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.3s ease;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.list-move {
+  transition: transform 0.3s ease;
+}
+</style>
